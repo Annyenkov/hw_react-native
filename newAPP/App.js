@@ -19,7 +19,6 @@ const screenDimensions = Dimensions.get('screen');
 
 export default function App() {
   const [show, isShow] = useState(true)
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [dimensions, setDimensions] = useState({
     window: windowDimensions,
     screen: screenDimensions,
@@ -29,15 +28,6 @@ export default function App() {
     RobotoMedium: require('./assets/fonts/Roboto-Medium.ttf'),
     RobotoRegular: require('./assets/fonts/Roboto-Regular.ttf')
   });
-
- useEffect(() => {
-    const hideSubscription = Keyboard.addListener('keyboardWillHide', () => {
-      setIsShowKeyboard(false);
-    });
-    return () => {
-      hideSubscription.remove();
-    };
- }, []);
   
   useEffect(() => {
     const subscription = Dimensions.addEventListener(
@@ -65,17 +55,11 @@ export default function App() {
           <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
           >
-             <View style={{ ...styles.form, marginBottom: isShowKeyboard ? -210 : 0 }}>
             {show === false ? <RegistrationScreen
-                setIsShowKeyboard={setIsShowKeyboard}
-                isShowKeyboard={isShowKeyboard}
                 isShow={isShow}
             /> : <LoginScreen
-                  setIsShowKeyboard={setIsShowKeyboard}
-                  isShowKeyboard={isShowKeyboard}
                   isShow={isShow}
               />}
-              </View>
           </KeyboardAvoidingView>
         </ImageBackground>
       </View>
@@ -92,10 +76,5 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: "cover",
     justifyContent: "flex-end",
-  },
-  form: {
-    backgroundColor: "white",
-    borderRadius: "25px 25px 0px 0px",
-    marginBottom: 0,
   },
 });

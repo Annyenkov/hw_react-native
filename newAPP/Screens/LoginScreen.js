@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,23 +6,33 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
+  Keyboard,
 } from 'react-native';
 
 const initialData = {
-  login: '',
   email: '',
   password: '',
 };
 
-export const LoginScreen = ({ setIsShowKeyboard, isShowKeyboard, isShow}) => {
-    const [isPasswordShow, setIsPasswordShow] = useState(true);
+export const LoginScreen = ({ isShow }) => {
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
+  const [isPasswordShow, setIsPasswordShow] = useState(true);
   const [data, setData] = useState(initialData);
+  useEffect(() => {
+    const hideSubscription = Keyboard.addListener('keyboardWillHide', () => {
+      setIsShowKeyboard(false);
+    });
+    return () => {
+      hideSubscription.remove();
+    };
+ }, []);
   const onSubmit = () => {
     console.log(data);
     setData(initialData);
   };
   return (
     <>
+       <View style={{ ...styles.form, marginBottom: isShowKeyboard ? -210 : 0 }}>
         <Text
           style={styles.formTitle}
         >Войти</Text>
@@ -75,11 +85,17 @@ export const LoginScreen = ({ setIsShowKeyboard, isShowKeyboard, isShow}) => {
             Нет аккаунта? Зарегистрироваться
           </Text>
         </TouchableOpacity>
+      </View>
     </>
   )
 };
 
 const styles = StyleSheet.create({
+  form: {
+    backgroundColor: "white",
+    borderRadius: "25px 25px 0px 0px",
+    marginBottom: 0,
+  },
   formTitle: {
     fontFamily: "RobotoMedium",
     fontStyle: "normal",
